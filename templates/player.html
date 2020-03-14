@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1, shrink-to-fit=no, width=device-width" name="viewport">
+    <title>Player - {{ character_name }}</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/sweetalert2-8.17.1/sweetalert2.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/Chart.js-2.8.0/Chart.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/material-4.1.1/css/material.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/fontawesome-free-5.12.0-web/css/all.min.css') }}">
+
+    <script src="{{ url_for('static', filename='vendor/sweetalert2-8.17.1/sweetalert2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/Chart.js-2.8.0/moment.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/Chart.js-2.8.0/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/material-4.1.1/js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/material-4.1.1/js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/material-4.1.1/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/material-4.1.1/js/material.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/fontawesome-free-5.12.0-web/js/fontawesome.min.js') }}"></script>
+
+    <!-- Page CSS -->
+    <style>
+        .card-background {
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-user-select: none;
+            border: 0;
+            border-radius: 2px;
+            box-shadow: 0 0 4px 0 rgba(0,0,0,.14),0 3px 4px 0 rgba(0,0,0,.12),0 1px 5px 0 rgba(0,0,0,.2);
+            color: #fff;
+            display: inline-block;
+            font-size: .875rem;
+            font-weight: 500;
+            line-height: 1;
+            margin: 0;
+            max-width: 100%;
+            min-width: 5.5rem;
+            padding: .6875rem 1rem;
+            position: relative;
+            text-align: center;
+            text-transform: uppercase;
+            transition-duration: .3s;
+            transition-property: box-shadow;
+            transition-timing-function: cubic-bezier(.4,0,.2,1);
+            user-select: none;
+            vertical-align: middle;
+            white-space: nowrap;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="faction-bg">
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark shadow-sm faction-primary faction-text-primary">
+        <a class="navbar-brand" href="/">
+            <span class="mx-2">Weekly Stats</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://ps2.fisu.pw/player/?name={{ character_name }}">FISU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://stats.dasanfall.com/ps2/player/{{ character_name }}">DA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://stats.binarycoder.info/playerinfo.php?playerName={{ character_name }}&sampleSize=100">BinaryCoder</a>
+                </li>
+            </ul>
+            <form id="navbarSearchForm" class="form-inline my-2 my-lg-0">
+                <input id="navbarSearchInput" class="form-control mr-sm-2" type="search" placeholder="Search">
+                <button id="navbarSearchButton" class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container-fluid my-4 py-2">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="alert rounded shadow-sm text-center mb-2 faction-primary faction-text-primary">
+                    <h2 class="mb-0">{{ character_name }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-4 col-xl-2 mt-3">
+                <div class="card my-2">
+                    <div class="card-body p-0">
+                        <div class="card-background faction-primary faction-text-primary">
+                            <h3 class="font-weight-bold mb-0">KDR</h3>
+                            <hr class="bg-white">
+                            <h3 id="kdrCard" class="mb-0">-</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-xl-2 mt-3">
+                <div class="card my-2">
+                    <div class="card-body p-0">
+                        <div class="card-background faction-primary faction-text-primary">
+                            <h3 class="font-weight-bold mb-0">KPM</h3>
+                            <hr class="bg-white">
+                            <h3 id="kpmCard" class="mb-0">-</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-xl-2 mt-3">
+                <div class="card my-2">
+                    <div class="card-body p-0">
+                        <div class="card-background faction-primary faction-text-primary">
+                            <h3 class="font-weight-bold mb-0">HSR</h3>
+                            <hr class="bg-white">
+                            <h3 id="hsrCard" class="mb-0">-</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-xl-2 mt-3">
+                <div class="card my-2">
+                    <div class="card-body p-0">
+                        <div class="card-background faction-primary faction-text-primary">
+                            <h3 class="font-weight-bold mb-0">ACC</h3>
+                            <hr class="bg-white">
+                            <h3 id="accCard" class="mb-0">-</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-xl-2 mt-3">
+                <div class="card my-2">
+                    <div class="card-body p-0">
+                        <div class="card-background faction-primary faction-text-primary">
+                            <h3 class="font-weight-bold mb-0">IvI</h3>
+                            <hr class="bg-white">
+                            <h3 id="iviCard" class="mb-0">-</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-5 mt-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-center border-0 p-2 pt-3 faction-primary faction-text-primary">
+                        <h3 class="text-center font-weight-bold mb-0">
+                            Weekly Kills and Deaths
+                        </h3>
+                        <a href="#" class="my-auto ml-2 faction-text-primary" data-toggle="modal" data-target="#kdModal" style="float: right;">
+                            <i class="fa fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="card-body faction-border" style="border: 8px solid">
+                        <canvas id="kdChart" width="800" height="500"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-5 mt-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-center border-0 p-2 pt-3 faction-primary faction-text-primary">
+                        <h3 class="text-center font-weight-bold mb-0">
+                            Weekly KDR
+                        </h3>
+                        <a href="#" class="my-auto ml-2 faction-text-primary" data-toggle="modal" data-target="#kdrModal" style="float: right;">
+                            <i class="fa fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="card-body faction-border" style="border: 8px solid">
+                        <canvas id="kdrChart" width="800" height="500"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kills and deaths graph modal -->
+    <div class="modal fade" id="kdModal">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content faction-primary">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center w-100 faction-text-primary">Weekly Kills and Deaths</h5>
+                    <button type="button" class="close faction-text-primary" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body bg-white">
+                    <canvas id="kdModalChart" width="800" height="500"></canvas>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KDR graph modal -->
+    <div class="modal fade" id="kdrModal">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content faction-primary">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center w-100 faction-text-primary">Weekly KDR</h5>
+                    <button type="button" class="close faction-text-primary" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body bg-white">
+                    <canvas id="kdrModalChart" width="800" height="500"></canvas>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- Page Scripting -->
+<script type="text/javascript">
+    let character_data = JSON.parse({{ character_data|tojson|safe }});
+    let events_data = JSON.parse({{ events_data|tojson|safe }});
+</script>
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
+
+</html>
